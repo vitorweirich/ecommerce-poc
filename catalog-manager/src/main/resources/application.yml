@@ -1,0 +1,61 @@
+server:
+  port: ${SERVER_PORT:8082}
+
+spring:
+  jackson:
+    time-zone: America/Sao_Paulo
+  application:
+    name: catalog-manager
+  datasource:
+    driverClassName: org.postgresql.Driver
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/postgres}
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:postgres}
+  jpa:
+    show-sql: ${JPA_SHOW_SQL:false}
+    open-in-view: false
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    properties.hibernate.temp.use_jdbc_metadata_defaults: false
+    hibernate:
+      ddl-auto: none
+      order_by:
+        default_null_ordering: last
+  flyway:
+    enabled: false
+    baseline-on-migrate: ${FLYWAY_BASELINE_ON_MIGRATE:false}
+  rabbitmq:
+    custom:
+      shared:
+        host: ${RABBIT_HOST:localhost}
+        port: ${RABBIT_PORT:5672}
+        username: ${RABBIT_USERNAME:guest}
+        password: ${RABBIT_PASSWORD:guest}
+        ttlRetryMessage: ${RABBIT_TTL_RETRY_MESSAGE:60000}
+        maxRetriesAttempts: 4
+        autoCreate: true
+        ttlMultiply: 2
+        concurrentConsumers: 3
+        maxConcurrentConsumers: 4
+        exchangeType: topic
+        enableLogs: ${RABBIT_ENABLE_LOGS:false}
+        useQueueNameAsRetryRoutingKey: false
+      teste:
+        queueRoutingKey: teste
+        exchange: teste
+        queue: catalog-mannager.teste
+        queueDlq: catalog-mannager.teste.dead
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+        exclude: beans,env
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+output:
+  ansi:
+    enabled: always

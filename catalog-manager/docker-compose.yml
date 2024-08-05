@@ -1,0 +1,32 @@
+version: "3"
+services:
+  rabbitmq:
+    image: rabbitmq:management
+    expose:
+      - "5672"
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    deploy:
+      resources:
+        limits:
+          memory: 256MB
+        reservations:
+          memory: 256MB
+    networks:
+      - default
+  postgres:
+    image: postgres
+    command: postgres -c 'max_connections=450' -c 'log_error_verbosity=terse'
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 12345678
+    ports:
+      - 5432:5432
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 10s
